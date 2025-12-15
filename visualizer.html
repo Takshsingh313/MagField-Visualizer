@@ -85,3 +85,101 @@
                         Clear All
                     </button>
                 </div>
+
+                 <div class="panel-section">
+                    <h2 class="panel-title">Visualization</h2>
+                    <div class="toggle-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="showVectors" checked>
+                            <span class="toggle-text">Vector Field</span>
+                        </label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="showStreamlines" checked>
+                            <span class="toggle-text">Streamlines</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h2 class="panel-title" id="strengthTitle">Dipole Strength</h2>
+                    <div class="segmented-control">
+                        <button class="segment-btn" data-value="50">Low</button>
+                        <button class="segment-btn active" data-value="100">Medium</button>
+                        <button class="segment-btn" data-value="300">High</button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h2 class="panel-title">Parameters</h2>
+
+                    <div class="slider-control">
+                        <label for="gridSpacing">
+                            <span>Grid Spacing</span>
+                            <span class="slider-value" id="gridSpacingValue">40</span>
+                        </label>
+                        <input type="range" id="gridSpacing" min="20" max="80" value="40" step="5">
+                    </div>
+
+                    <div class="slider-control">
+                        <label for="streamDensity">
+                            <span>Stream Density</span>
+                            <span class="slider-value" id="streamDensityValue">15</span>
+                        </label>
+                        <input type="range" id="streamDensity" min="5" max="30" value="15" step="1">
+                    </div>
+
+                    <div class="slider-control">
+                        <label for="streamLength">
+                            <span>Streamline Length</span>
+                            <span class="slider-value" id="streamLengthValue">200</span>
+                        </label>
+                        <input type="range" id="streamLength" min="50" max="500" value="200" step="10">
+                    </div>
+
+                    <div class="slider-control">
+                        <label for="stepSize">
+                            <span>Step Size</span>
+                            <span class="slider-value" id="stepSizeValue">2</span>
+                        </label>
+                        <input type="range" id="stepSize" min="0.5" max="5" value="2" step="0.1">
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h2 class="panel-title">Export</h2>
+                    <button class="btn btn-secondary" id="exportPNG">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 3V10M8 10L5 7M8 10L11 7M3 13H13" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Export PNG
+                    </button>
+                </div>
+
+                <div class="info-panel">
+                    <p class="info-text"><strong>Tip:</strong> Drag dipoles to move, use the handle to rotate. Click
+                        wires to adjust position.</p>
+                </div>
+            </aside>
+
+            <div class="visualization-column">
+                <div class="canvas-container">
+                    <canvas id="canvas"></canvas>
+                    <div id="loadingIndicator" class="loading-indicator" style="display: none;">Rendering: 0%</div>
+                </div>
+
+                <div class="canvas-info">
+                    <span class="info-label">Position:</span>
+                    <span id="posValue" class="info-value">(0, 0)</span>
+                    <span class="info-divider">|</span>
+                    <span class="info-label">Field:</span>
+                    <span id="fieldValue" class="info-value">0.000</span>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <script src="static/js/script.js"></script>
+</body>
+
+</html>
