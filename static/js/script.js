@@ -539,3 +539,221 @@ function drawSingleStreamline(points) {
     }
     ctx.globalAlpha = 1.0;
 }
+
+function startProgressiveRender() {
+    ctx.fillStyle = '#050810';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (state.settings.showVectors) {
+        drawVectorField();
+    }
+
+    for (const dipole of state.dipoles) dipole.draw();
+    for (const wire of state.wires) wire.draw();
+
+    showLoadingIndicator();
+
+    const density = state.settings.streamDensity;
+    const seedPoints = generateSeedPoints(density);
+
+    const chunkSize = 10;
+    state.rendering.streamlineChunks = [];
+    for (let i = 0; i < seedPoints.length; i += chunkSize) {
+        state.rendering.streamlineChunks.push(seedPoints.slice(i, i + chunkSize));
+    }
+
+    state.rendering.currentChunk = 0;
+    state.rendering.progressiveMode = true;
+}
+
+function renderNextChunk() {
+    if (state.rendering.currentChunk >= state.rendering.streamlineChunks.length) {
+        state.rendering.progressiveMode = false;
+        hideLoadingIndicator();
+        return;
+    }
+
+    const chunk = state.rendering.streamlineChunks[state.rendering.currentChunk];
+
+    for (const seed of chunk) {
+        const points = traceStreamline(seed.x, seed.y);
+        if (points.length >= 2) {
+            drawSingleStreamline(points);
+        }
+    }
+
+    for (const dipole of state.dipoles) dipole.draw();
+    for (const wire of state.wires) wire.draw();
+
+    const progress = Math.round((state.rendering.currentChunk / state.rendering.streamlineChunks.length) * 100);
+    updateLoadingProgress(progress);
+
+    state.rendering.currentChunk++;
+}
+
+function showLoadingIndicator() {
+    const indicator = document.getElementById('loadingIndicator');
+    if (indicator) {
+        indicator.style.display = 'block';
+        indicator.textContent = 'Rendering: 0%';
+    }
+}
+
+function updateLoadingProgress(progress) {
+    const indicator = document.getElementById('loadingIndicator');
+    if (indicator) {
+        indicator.textContent = `Rendering: ${progress}%`;
+    }
+}
+
+function hideLoadingIndicator() {
+    const indicator = document.getElementById('loadingIndicator');
+    if (indicator) {
+        indicator.style.display = 'none';
+    }
+}
+
+let lastCursorUpdate = 0;
+const CURSOR_UPDATE_THROTTLE = 50;
+
+function updateCursorInfo(x, y) {
+    const now = Date.now();
+    if (now - lastCursorUpdate < CURSOR_UPDATE_THROTTLE) {
+        return;
+    }
+    lastCursorUpdate = now;
+
+    const field = getTotalField(x, y);
+    const mag = Math.sqrt(field.x * field.x + field.y * field.y);
+
+    const posValue = document.getElementById('posValue');
+    const fieldValue = document.getElementById('fieldValue');
+
+    if (posValue && fieldValue) {
+        posValue.textContent = [(${Math.round(x)}, ${Math.round(y)})](cci:2://file:///c:/Users/taksh/OneDrive/Desktop/New%20folder/static/js/script.js:191:0-271:1);
+        fieldValue.textContent = mag.toFixed(3);
+    }
+}
+
+canvas.addEventListener('mousedown', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    for (const dipole of state.dipoles) {
+        if (dipole.handleContains(x, y)) {
+            state.interaction.rotating = dipole;
+            return;
+        }
+    }
+
+    for (const dipole of state.dipoles) {
+        if (dipole.contains(x, y)) {
+            state.interaction.dragging = dipole;
+            state.interaction.offset = {
+                x: x - dipole.x,
+                y: y - dipole.y
+            };
+            return;
+        }
+    }
+
+    for (const wire of state.wires) {
+        if (wire.contains(x, y)) {
+            state.interaction.dragging = wire;
+            state.interaction.offset = {
+                x: x - wire.x,
+                y: y - wire.y
+            };
+            return;
+        }
+    }
+});
+
+canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    if (state.interaction.dragging) {
+        if (e.buttons !== 1) {
+            state.interaction.dragging = null;
+            state.interaction.rotating = null;
+            canvas.style.cursor = 'default';
+            return;
+        }
+
+        state.interaction.dragging.x = x - state.interaction.offset.x;
+        state.interaction.dragging.y = y - state.interaction.offset.y;
+        canvas.style.cursor = 'grabbing';
+        requestRender();
+        return;
+    }
+
+    if (state.interaction.rotating) {
+        const dx = x - state.interaction.rotating.x;
+        const dy = y - state.interaction.rotating.y;
+        state.interaction.rotating.angle = Math.atan2(dy, dx);
+        canvas.style.cursor = 'grabbing';
+        requestRender();
+        return;
+    }
+
+    let hovering = false;
+
+    for (const dipole of state.dipoles) {
+        if (dipole.handleContains(x, y)) {
+            canvas.style.cursor = 'grab';
+            hovering = true;
+            break;
+        }
+    }
+
+    if (!hovering) {
+        for (const dipole of state.dipoles) {
+            if (dipole.contains(x, y)) {
+                canvas.style.cursor = 'move';
+                hovering = true;
+                break;
+            }
+        }
+    }
+
+    if (!hovering) {
+        for (const wire of state.wires) {
+            if (wire.contains(x, y)) {
+                canvas.style.cursor = 'move';
+                hovering = true;
+                break;
+            }
+        }
+    }
+
+    if (!hovering) {
+        canvas.style.cursor = 'default';
+    }
+
+    updateCursorInfo(x, y);
+});
+
+window.addEventListener('mouseup', () => {
+    if (state.interaction.dragging || state.interaction.rotating) {
+        state.interaction.dragging = null;
+        state.interaction.rotating = null;
+        requestRender();
+    }
+});
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+const debouncedRender = debounce(requestRender, 150);
