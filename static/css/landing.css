@@ -1,19 +1,15 @@
-/* Landing Page Specific Styles */
 body {
     min-height: 100vh;
     overflow-x: hidden;
     overflow-y: auto;
-    /* Allow vertical scroll to prevent clipping */
     display: flex;
     justify-content: center;
     align-items: center;
     background: #02040a;
     transition: background-color 0.5s ease;
     padding: 80px 0 40px 0;
-    /* Add padding for navbar and bottom space */
 }
 
-/* Navbar */
 .navbar {
     position: fixed;
     top: 0;
@@ -26,7 +22,6 @@ body {
     z-index: 1000;
     pointer-events: none;
     background: linear-gradient(to bottom, rgba(2, 4, 10, 0.8), transparent);
-    /* Gradient fade for navbar */
 }
 
 .navbar>* {
@@ -119,3 +114,159 @@ body {
     opacity: 1;
     transform: rotate(0) scale(1);
 }
+
+
+
+.grid-bg {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image:
+        linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    transform: perspective(500px) rotateX(60deg);
+    animation: gridMove 20s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+@keyframes gridMove {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 0 50px;
+    }
+}
+
+#compass-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    pointer-events: none;
+    opacity: 1;
+}
+
+.compass-needle {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.compass-needle::before {
+    content: '';
+    width: 20px;
+    height: 2px;
+    background: linear-gradient(90deg, #ef4444 50%, #3b82f6 50%);
+    border-radius: 2px;
+    transition: transform 0.1s ease-out;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+.landing-container {
+    text-align: center;
+    z-index: 10;
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.title-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeDown 1s ease-out forwards;
+}
+
+.main-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 4.5rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
+    margin-bottom: 1rem;
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    display: block;
+}
+
+.main-title:hover {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    text-shadow: 0 0 60px rgba(129, 140, 248, 0.8);
+    letter-spacing: 2px;
+}
+
+.hero-description {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.2rem;
+    color: #94a3b8;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 1s ease-out 0.2s forwards;
+    font-weight: 300;
+}
+
+.title-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+    z-index: 1;
+    filter: blur(40px);
+    animation: pulseGlow 5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+.cards-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    perspective: 1000px;
+    padding-bottom: 2rem;
+  
+}
+
+
