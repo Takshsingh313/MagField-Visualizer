@@ -99,3 +99,70 @@
                 <div class="p"></div>
             </div>
         </div>
+
+
+        <div class="transition-content wire-transition">
+            <div class="wire-container">
+                <div class="main-wire"></div>
+                <svg class="lightning-svg" viewBox="0 0 100 20" preserveAspectRatio="none">
+                    <path class="lightning-path"
+                        d="M0,10 L10,5 L20,15 L30,5 L40,15 L50,5 L60,15 L70,5 L80,15 L90,5 L100,10" />
+                </svg>
+                <div class="magnetic-rings">
+                    <div class="ring r1"></div>
+                    <div class="ring r2"></div>
+                    <div class="ring r3"></div>
+                </div>
+                <div class="sparks-burst">
+                    <div class="s"></div>
+                    <div class="s"></div>
+                    <div class="s"></div>
+                    <div class="s"></div>
+                    <div class="s"></div>
+                    <div class="s"></div>
+                    <div class="s"></div>
+                    <div class="s"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', function (e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                const isDipole = href.includes('dipole');
+                const overlay = document.getElementById('transitionOverlay');
+
+                overlay.classList.add('active');
+                if (isDipole) {
+                    overlay.classList.add('mode-dipole');
+                } else {
+                    overlay.classList.add('mode-wire');
+                }
+
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 2000);
+            });
+
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        const themeToggle = document.getElementById('landingThemeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        });
+
+
+
+
