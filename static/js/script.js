@@ -324,3 +324,218 @@ function traceStreamline(x0, y0) {
 
     return points;
 }
+
+
+function magnitudeToColor(mag) {
+    const normalized = Math.min(mag / CONFIG.MAX_FIELD_DISPLAY, 1.0);
+
+    if (normalized < 0.25) {
+        const t = normalized / 0.25;
+        return `rgb(${Math.floor(66 * (1 - t) + 6 * t)}, ${Math.floor(153 * (1 - t) + 182 * t)}, ${Math.floor(245 * (1 - t) + 212 * t)})`;
+    } else if (normalized < 0.5) {
+        const t = (normalized - 0.25) / 0.25;
+        return `rgb(${Math.floor(6 * (1 - t) + 16 * t)}, ${Math.floor(182 * (1 - t) + 185 * t)}, ${Math.floor(212 * (1 - t) + 129 * t)})`;
+    } else if (normalized < 0.75) {
+        const t = (normalized - 0.5) / 0.25;
+        return `rgb(${Math.floor(16 * (1 - t) + 245 * t)}, ${Math.floor(185 * (1 - t) + 158 * t)}, ${Math.floor(129 * (1 - t) + 11 * t)})`;
+    } else {
+        const t = (normalized - 0.75) / 0.25;
+        return `rgb(${Math.floor(245 * (1 - t) + 239 * t)}, ${Math.floor(158 * (1 - t) + 68 * t)}, ${Math.floor(11 * (1 - t) + 68 * t)})`;
+    }
+}
+
+function requestRender() {
+    state.rendering.needsRender = true;
+    if (!state.rendering.animationId) {
+        state.rendering.animationId = requestAnimationFrame(animationLoop);
+    }
+}
+
+function animationLoop() {
+    if (state.rendering.needsRender) {
+        state.rendering.needsRender = false;
+        state.rendering.isRendering = true;
+
+        const isInteracting = state.interaction.dragging || state.interaction.rotating;
+
+        if (isInteracting) {
+            renderFast();
+        } else {
+            const streamCount = state.settings.streamDensity * state.settings.streamDensity;
+            if (state.settings.showStreamlines && streamCount > 100) {
+                startProgressiveRender();
+            } else {
+                render();
+            }
+        }
+
+        state.rendering.isRendering = false;
+    }
+
+    if (state.rendering.progressiveMode && !state.interaction.dragging && !state.interaction.rotating) {
+        renderNextChunk();
+    }
+
+    
+    state.rendering.animationId = requestAnimationFrame(animationLoop);
+}
+
+
+function renderFast() {
+    // Clear canvas
+    ctx.fillStyle = '#050810';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (state.settings.showVectors) {
+        drawVectorField();
+    }
+
+    if (state.settings.showStreamlines) {
+        drawStreamlines(8); 
+    }
+
+    for (const dipole of state.dipoles) dipole.draw();
+    for (const wire of state.wires) wire.draw();
+}
+
+function render() {
+    ctx.fillStyle = '#050810';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (state.settings.showVectors) {
+        drawVectorField();
+    }
+
+    if (state.settings.showStreamlines) {
+        drawStreamlines();
+    }
+
+    for (const dipole of state.dipoles) {
+        dipole.draw();
+    }
+    for (const wire of state.wires) {
+        wire.draw();
+    }
+}
+
+function drawVectorField() {
+    const spacing = state.settings.gridSpacing;
+    const hasAnySources = state.dipoles.length > 0 || state.wires.length > 0;
+
+    for (let x = spacing / 2; x < canvas.width; x += spacing) {
+        for (let y = spacing / 2; y < canvas.height; y += spacing) {
+            const field = getTotalField(x, y);
+            const mag = Math.sqrt(field.x * field.x + field.y * field.y);
+
+            if (!hasAnySources) {
+                drawPlaceholderArrow(x, y, spacing);
+                continue;
+            }
+
+            if (mag < 1e-6) continue;
+
+
+            const scale = Math.min(CONFIG.ARROW_SCALE * spacing / 3, mag * spacing / 5);
+            const dx = (field.x / mag) * scale;
+            const dy = (field.y / mag) * scale;
+
+     
+            const color = magnitudeToColor(mag);
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = 1.5;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + dx, y + dy);
+            ctx.stroke();
+
+            const angle = Math.atan2(dy, dx);
+            const headLen = 4;
+            ctx.beginPath();
+            ctx.moveTo(x + dx, y + dy);
+            ctx.lineTo(
+                x + dx - headLen * Math.cos(angle - Math.PI / 6),
+                y + dy - headLen * Math.sin(angle - Math.PI / 6)
+            );
+            ctx.lineTo(
+                x + dx - headLen * Math.cos(angle + Math.PI / 6),
+                y + dy - headLen * Math.sin(angle + Math.PI / 6)
+            );
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+}
+
+
+function drawPlaceholderArrow(x, y, spacing) {
+    const scale = spacing / 4;
+    const dx = scale;
+    const dy = 0;
+
+    ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)';
+    ctx.fillStyle = 'rgba(99, 102, 241, 0.3)';
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + dx, y + dy);
+    ctx.stroke();
+
+    const angle = Math.atan2(dy, dx);
+    const headLen = 3;
+    ctx.beginPath();
+    ctx.moveTo(x + dx, y + dy);
+    ctx.lineTo(
+        x + dx - headLen * Math.cos(angle - Math.PI / 6),
+        y + dy - headLen * Math.sin(angle - Math.PI / 6)
+    );
+    ctx.lineTo(
+        x + dx - headLen * Math.cos(angle + Math.PI / 6),
+        y + dy - headLen * Math.sin(angle + Math.PI / 6)
+    );
+    ctx.closePath();
+    ctx.fill();
+}
+
+function drawStreamlines(densityOverride = null) {
+    const density = densityOverride || state.settings.streamDensity;
+    const seedPoints = generateSeedPoints(density);
+
+    for (const seed of seedPoints) {
+        const points = traceStreamline(seed.x, seed.y);
+        if (points.length < 2) continue;
+        drawSingleStreamline(points);
+    }
+}
+
+function generateSeedPoints(density) {
+    const seeds = [];
+    for (let x = 0; x < canvas.width; x += canvas.width / density) {
+        for (let y = 0; y < canvas.height; y += canvas.height / density) {
+            const seedX = x + (Math.random() - 0.5) * (canvas.width / density) * 0.5;
+            const seedY = y + (Math.random() - 0.5) * (canvas.height / density) * 0.5;
+            seeds.push({ x: seedX, y: seedY });
+        }
+    }
+    return seeds;
+}
+
+
+function drawSingleStreamline(points) {
+    for (let i = 0; i < points.length - 1; i++) {
+        const p1 = points[i];
+        const p2 = points[i + 1];
+
+        ctx.strokeStyle = magnitudeToColor(p1.mag);
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 0.6;
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+    }
+    ctx.globalAlpha = 1.0;
+}
