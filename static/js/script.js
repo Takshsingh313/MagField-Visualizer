@@ -757,3 +757,111 @@ function debounce(func, wait) {
 }
 
 const debouncedRender = debounce(requestRender, 150);
+
+
+
+document.getElementById('addDipole').addEventListener('click', () => {
+    state.dipoles.push(new Dipole(
+        canvas.width / 2 + (Math.random() - 0.5) * 100,
+        canvas.height / 2 + (Math.random() - 0.5) * 100,
+        Math.random() * Math.PI * 2
+    ));
+    requestRender();
+});
+
+document.getElementById('addWirePositive').addEventListener('click', () => {
+    state.wires.push(new Wire(
+        canvas.width / 2 + (Math.random() - 0.5) * 100,
+        canvas.height / 2 + (Math.random() - 0.5) * 100,
+        CONFIG.WIRE_CURRENT 
+    ));
+    requestRender();
+});
+
+document.getElementById('addWireNegative').addEventListener('click', () => {
+    state.wires.push(new Wire(
+        canvas.width / 2 + (Math.random() - 0.5) * 100,
+        canvas.height / 2 + (Math.random() - 0.5) * 100,
+        -CONFIG.WIRE_CURRENT 
+    ));
+    requestRender();
+});
+
+document.getElementById('clearAll').addEventListener('click', () => {
+    state.dipoles = [];
+    state.wires = [];
+    requestRender();
+});
+
+document.getElementById('showVectors').addEventListener('change', (e) => {
+    state.settings.showVectors = e.target.checked;
+    requestRender();
+});
+
+document.getElementById('showStreamlines').addEventListener('change', (e) => {
+    state.settings.showStreamlines = e.target.checked;
+    requestRender();
+});
+
+const STRENGTH_LEVELS = {
+    dipole: [50, 100, 300],
+    wire: [50, 100, 300]
+};
+
+document.querySelectorAll('.segment-btn').forEach((btn, index) => {
+    btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode') || 'dipole'; 
+
+        const levels = mode === 'wire' ? STRENGTH_LEVELS.wire : STRENGTH_LEVELS.dipole;
+        const strength = levels[index];
+
+        if (mode === 'wire') {
+            CONFIG.WIRE_CURRENT = strength;
+            for (const wire of state.wires) {
+                const sign = wire.current >= 0 ? 1 : -1;
+                wire.current = strength * sign;
+            }
+        } else {
+            CONFIG.DIPOLE_MOMENT = strength;
+            for (const dipole of state.dipoles) dipole.moment = strength;
+        }
+
+        requestRender();
+    });
+});
+
+document.getElementById('gridSpacing').addEventListener('input', (e) => {
+    state.settings.gridSpacing = parseInt(e.target.value);
+    document.getElementById('gridSpacingValue').textContent = e.target.value;
+    debouncedRender(); 
+});
+
+document.getElementById('streamDensity').addEventListener('input', (e) => {
+    state.settings.streamDensity = parseInt(e.target.value);
+    document.getElementById('streamDensityValue').textContent = e.target.value;
+    debouncedRender(); 
+});
+
+document.getElementById('streamLength').addEventListener('input', (e) => {
+    state.settings.streamLength = parseInt(e.target.value);
+    document.getElementById('streamLengthValue').textContent = e.target.value;
+    debouncedRender(); 
+});
+
+document.getElementById('stepSize').addEventListener('input', (e) => {
+    state.settings.stepSize = parseFloat(e.target.value);
+    document.getElementById('stepSizeValue').textContent = e.target.value;
+    debouncedRender(); 
+});
+
+document.getElementById('exportPNG').addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = `magnetic-field-${Date.now()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+});
+
