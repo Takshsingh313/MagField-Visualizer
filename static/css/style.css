@@ -81,3 +81,179 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+
+.header {
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.title-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    cursor: default;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+}
+
+.title:hover {
+    transform: scale(1.05) translateY(-2px);
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: var(--spacing-xs) 0;
+}
+
+.tagline {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+body .back-home-btn {
+    position: fixed;
+    left: 24px;
+    top: 24px;
+    z-index: 10000;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-decoration: none !important;
+    letter-spacing: 0.02em;
+
+    padding: 0.75rem;
+    width: 48px;
+    height: 48px;
+    justify-content: center;
+    background: linear-gradient(135deg,
+            rgba(30, 41, 59, 0.9) 0%,
+            rgba(15, 23, 42, 0.95) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 50%;
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow:
+        0 4px 20px -2px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(139, 92, 246, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    user-select: none;
+    transform: translateZ(0);
+}
+
+body .back-home-btn:hover {
+    background: linear-gradient(135deg,
+            rgba(49, 46, 129, 0.8) 0%,
+            rgba(30, 27, 75, 0.9) 100%);
+    border-color: #d946ef;
+    color: #ffffff !important;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow:
+        0 8px 25px -5px rgba(139, 92, 246, 0.5),
+        0 0 12px rgba(217, 70, 239, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+body .back-home-btn svg {
+    stroke: #a78bfa;
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 0 2px rgba(167, 139, 250, 0.5));
+}
+
+body .back-home-btn:hover svg {
+    stroke: #fff;
+    transform: translateX(-3px);
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 50%;
+    right: var(--spacing-lg);
+    transform: translateY(-50%);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+    background: var(--accent-primary);
+}
+
+.theme-toggle .sun-icon,
+.theme-toggle .moon-icon {
+    color: var(--text-primary);
+    position: absolute;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-toggle .sun-icon {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+}
+
+.theme-toggle .moon-icon {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+}
+
+[data-theme="light"] .theme-toggle .sun-icon {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+}
+
+[data-theme="light"] .theme-toggle .moon-icon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--spacing-md);
+    flex: 1;
+    min-height: 0;
+}
