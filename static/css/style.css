@@ -1,7 +1,7 @@
 
 
 :root {
-    /* Dark Theme (Default) */
+    
     --bg-primary: #0a0f1e;
     --bg-secondary: #0f172a;
     --bg-tertiary: #1e293b;
@@ -15,20 +15,17 @@
     --shadow-color: rgba(0, 0, 0, 0.4);
     --canvas-bg: #050810;
 
-    /* Spacing */
     --spacing-xs: 0.5rem;
     --spacing-sm: 0.75rem;
     --spacing-md: 1rem;
     --spacing-lg: 1.5rem;
     --spacing-xl: 2rem;
 
-    /* Border Radius */
     --radius-sm: 0.375rem;
     --radius-md: 0.5rem;
     --radius-lg: 0.75rem;
     --radius-xl: 1rem;
 
-    /* Transitions */
     --transition-fast: 150ms ease;
     --transition-normal: 250ms ease;
     --transition-slow: 350ms ease;
@@ -400,4 +397,148 @@ body .back-home-btn:hover svg {
 
 .btn:hover::after {
     animation: shimmer 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3),
+        0 2px 4px -1px rgba(99, 102, 241, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.5),
+        0 0 30px rgba(99, 102, 241, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 4px -1px rgba(99, 102, 241, 0.3);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(4px);
+}
+
+.btn-secondary:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--accent-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+    text-shadow: 0 0 5px rgba(99, 102, 241, 0.5);
+}
+
+.btn-secondary:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--accent-danger), #b91c1c);
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.5),
+        0 0 30px rgba(239, 68, 68, 0.3);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-danger:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.toggle-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+}
+
+.toggle-text {
+    color: var(--text-secondary);
+}
+
+.slider-control {
+    margin-bottom: var(--spacing-md);
+}
+
+.slider-control label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.slider-value {
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 4px;
+    background: var(--bg-tertiary);
+    border-radius: 2px;
+    outline: none;
+}
+
+.visualization-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    flex: 1;
+    min-height: 0;
+}
+
+.canvas-container {
+    background: var(--canvas-bg);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+}
+
+.loading-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-secondary);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    color: var(--text-primary);
 }
