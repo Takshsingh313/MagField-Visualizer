@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Use - MagField Visualizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="static/css/landing.css">
+    <style>
+        .how-to-body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body class="how-to-body">
+
+  <nav class="navbar">
+        <a href="index.html" class="logo" style="text-decoration: none;">
+            <div class="logo-icon-wrapper">
+                <img src="static/images/logo.png" alt="Mag Field Logo" class="logo-img">
+            </div>
+            <span class="logo-text">Mag Field</span>
+        </a>
+        <div class="nav-controls">
+            <a href="index.html" class="back-link guide-btn">Back to Home</a>
+            <button class="theme-toggle-landing" id="landingThemeToggle" aria-label="Toggle theme">
+                <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="5" />
+                    <path
+                        d="M12 1v2m0 18v2M23 12h-2M3 12H1m17.66-7.66l-1.41 1.41M5.75 18.25l-1.41 1.41M18.25 18.25l1.41 1.41" />
+                </svg>
+                <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-bg"></div>
+
+    <div class="how-to-container">
+        <header class="guide-header">
+            <h1 class="main-title guide-title">User Guide</h1>
+            <p class="hero-description guide-desc">Master the magnetic forces. Learn how to control and visualize
+                electromagnetic fields.</p>
+        </header>
+
+        <div class="guide-grid">
+            <section class="guide-section">
+                <div class="icon-header">
+                    <span class="section-icon">🧲</span>
+                    <h2>Dipole Mode</h2>
+                </div>
+                <div class="instruction-card">
+                    <h3>Simulation Controls</h3>
+                    <ul class="guide-list">
+                        <li><strong>Add Dipole:</strong> Click Add Dipole to create a new magnet..</li>
+                        <li><strong>Move:</strong> Grab any magnet and drag it to move it where you want.</li>
+                        <li><strong>Rotate:</strong> Drag the small purple handle that circles the magnet to rotate it and change its direction.</li>
+                        <li><strong>Strength:</strong> Use the Strength toggle (Low / Medium / High) to adjust how strong the magnet 
+                        is.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="guide-section">
+                <div class="icon-header">
+                    <span class="section-icon">⚡</span>
+                    <h2>Wire Mode</h2>
+                </div>
+                <div class="instruction-card">
+                    <h3>Current & Flow</h3>
+                    <ul class="guide-list">
+                        <li><strong>Add Wire (+):</strong> Spawns a wire with current flowing <em>out</em> of the screen
+                            (Green).</li>
+                        <li><strong>Add Wire (-):</strong> Spawns a wire with current flowing <em>into</em> the screen
+                            (Orange).</li>
+                        <li><strong>Interaction:</strong> Drag wires to observe how their circular magnetic fields
+                            interact.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="guide-section full-width">
+                <div class="icon-header">
+                    <span class="section-icon">⚙️</span>
+                    <h2>General Visualization</h2>
+                </div>
+                <div class="instruction-grid">
+                    <div class="instruction-card">
+                        <h3>View Options</h3>
+                        <p>Toggle <strong>Vectors</strong> (arrows) and <strong>Streamlines</strong> (continuous lines)
+                            using the checkboxes.</p>
+                    </div>
+                    <div class="instruction-card">
+                        <h3>Advanced Settings</h3>
+                        <p>Use the <strong>Grid Spacing</strong> and <strong>Stream Density</strong> sliders to balance
+                            performance and visual detail.</p>
+                    </div>
+                    <div class="instruction-card">
+                        <h3>Export</h3>
+                        <p>Click <strong>Export Image</strong> to save a high-resolution png of your current field
+                            setup.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('landingThemeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        });
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+</body>
+
+</html>
