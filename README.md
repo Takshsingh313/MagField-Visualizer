@@ -2,11 +2,11 @@
    <img src="static/images/logo.png" alt="Mag Field Logo" width="200"/>
 
 # MagField Visualizer
+**A visualizer which which show the magnetic dipole and current in a stunning environment** 
 
 [![Axiom](https://img.shields.io/badge/Built%20for-Axiom%20YSWS-orange)](https://axiom.hackclub.com/)
 
 </div>
----
 
 ## About
 Magnetic Field Visualizer is an interactive web visualizer that makes invisible magnetic fields visible by allowing users to place magnets and current-carrying wires.
