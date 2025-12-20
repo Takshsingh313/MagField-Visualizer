@@ -115,8 +115,6 @@ body {
     transform: rotate(0) scale(1);
 }
 
-
-
 .grid-bg {
     position: fixed;
     top: -50%;
@@ -266,7 +264,6 @@ body {
     gap: 3rem;
     perspective: 1000px;
     padding-bottom: 2rem;
-  
 }
 
 .card {
@@ -569,7 +566,6 @@ body.light-mode .compass-needle::before {
     height: 2px;
 }
 
-
 .transition-overlay {
     position: fixed;
     top: 0;
@@ -598,7 +594,6 @@ body.light-mode .compass-needle::before {
     position: relative;
     overflow: hidden;
 }
-
 
 .transition-overlay.mode-dipole .dipole-transition {
     display: block;
@@ -898,7 +893,6 @@ body.light-mode .compass-needle::before {
     }
 }
 
-
 @keyframes ringExpand {
     0% {
         width: 0;
@@ -926,7 +920,6 @@ body.light-mode .compass-needle::before {
         opacity: 0;
     }
 }
-
 
 .nav-controls {
     display: flex;
@@ -1078,7 +1071,6 @@ body.light-mode .icon-header {
     border-bottom-color: rgba(0, 0, 0, 0.1);
 }
 
-
 .guide-btn {
     font-family: "Outfit", sans-serif;
     font-weight: 600;
@@ -1111,12 +1103,3 @@ body.light-mode .guide-btn:hover {
     color: #1e293b;
     box-shadow: 0 8px 15px rgba(99, 102, 241, 0.15);
 }
-
-
-
-
-
-
-
-
-

@@ -1,14 +1,16 @@
 
 const CONFIG = {
-  
-    MU_0: 1.0,              
+   
+    MU_0: 1.0,             
     SOFTENING: 5.0,         
 
+   
     DIPOLE_MOMENT: 100.0,   
     DIPOLE_RADIUS: 15,      
+    
+    WIRE_CURRENT: 50.0,    
+    WIRE_LENGTH: 1000,     
 
-    WIRE_CURRENT: 50.0,     
-    WIRE_LENGTH: 1000,      
 
     ARROW_SCALE: 2.0,       
     MAX_FIELD_DISPLAY: 5.0, 
@@ -41,7 +43,6 @@ const state = {
     }
 };
 
-
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -55,6 +56,7 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
+
 class Dipole {
     constructor(x, y, angle = 0) {
         this.x = x;
@@ -64,9 +66,9 @@ class Dipole {
         this.radius = CONFIG.DIPOLE_RADIUS;
     }
 
-     */
+    
     getField(px, py) {
-
+        
         const dx = px - this.x;
         const dy = py - this.y;
         const r2 = dx * dx + dy * dy;
@@ -74,19 +76,21 @@ class Dipole {
         const r = Math.sqrt(r2_soft);
         const r3 = r2_soft * r;
 
+       
         if (r < 1e-6) return { x: 0, y: 0 };
 
-       
+        
         const mx = this.moment * Math.cos(this.angle);
         const my = this.moment * Math.sin(this.angle);
 
-     
+        
         const rx_hat = dx / r;
         const ry_hat = dy / r;
 
+       
         const m_dot_r = mx * rx_hat + my * ry_hat;
 
-     
+        
         const factor = CONFIG.MU_0 / r3;
         const Bx = factor * (3 * m_dot_r * rx_hat - mx);
         const By = factor * (3 * m_dot_r * ry_hat - my);
@@ -109,13 +113,11 @@ class Dipole {
         ctx.arc(this.radius * 0.8, 0, this.radius * 0.5, 0, Math.PI * 2);
         ctx.fill();
 
-     
         ctx.fillStyle = '#3b82f6';
         ctx.beginPath();
         ctx.arc(-this.radius * 0.8, 0, this.radius * 0.5, 0, Math.PI * 2);
         ctx.fill();
 
-       
         ctx.fillStyle = 'white';
         ctx.font = 'bold 10px Inter';
         ctx.textAlign = 'center';
@@ -123,7 +125,6 @@ class Dipole {
         ctx.fillText('N', this.radius * 0.8, 0);
         ctx.fillText('S', -this.radius * 0.8, 0);
 
-       
         ctx.strokeStyle = '#8b5cf6';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -149,19 +150,17 @@ class Dipole {
 }
 
 
- */
 class Wire {
     constructor(x, y, current = CONFIG.WIRE_CURRENT) {
         this.x = x;
         this.y = y;
-        this.current = current; 
+        this.current = current;  
         this.radius = 10;
     }
 
-
-     */
+    
     getField(px, py) {
-       
+        
         const dx = px - this.x;
         const dy = py - this.y;
         const r2 = dx * dx + dy * dy;
@@ -170,6 +169,7 @@ class Wire {
 
         if (r < 1e-6) return { x: 0, y: 0 };
 
+       
         const B_mag = (CONFIG.MU_0 * this.current) / (2 * Math.PI * r);
 
         return {
@@ -181,13 +181,12 @@ class Wire {
     draw() {
         ctx.save();
 
-     
+        
         if (this.current > 0) {
             
             ctx.fillStyle = '#10b981';
             ctx.strokeStyle = '#059669';
         } else {
-           
             ctx.fillStyle = '#f59e0b';
             ctx.strokeStyle = '#d97706';
         }
@@ -198,17 +197,16 @@ class Wire {
         ctx.lineWidth = 2;
         ctx.stroke();
 
-     
+       
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 2;
         if (this.current > 0) {
-          
+           
             ctx.beginPath();
             ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
             ctx.fillStyle = 'white';
             ctx.fill();
         } else {
-       
             ctx.beginPath();
             ctx.moveTo(this.x - 5, this.y - 5);
             ctx.lineTo(this.x + 5, this.y + 5);
@@ -223,10 +221,11 @@ class Wire {
     contains(px, py) {
         const dx = px - this.x;
         const dy = py - this.y;
-       
+        
         return Math.sqrt(dx * dx + dy * dy) < this.radius * 3;
     }
 }
+
 
 function getTotalField(x, y) {
     let Bx = 0, By = 0;
@@ -237,7 +236,6 @@ function getTotalField(x, y) {
         By += field.y;
     }
 
-  
     for (const wire of state.wires) {
         const field = wire.getField(x, y);
         Bx += field.x;
@@ -251,7 +249,6 @@ function getTotalField(x, y) {
 function rk4Step(x, y, h, forward = true) {
     const sign = forward ? 1 : -1;
 
- 
     const B1 = getTotalField(x, y);
     const mag1 = Math.sqrt(B1.x * B1.x + B1.y * B1.y);
     if (mag1 < 1e-6) return null;
@@ -264,7 +261,6 @@ function rk4Step(x, y, h, forward = true) {
     const k2x = sign * B2.x / mag2;
     const k2y = sign * B2.y / mag2;
 
- 
     const B3 = getTotalField(x + h * k2x / 2, y + h * k2y / 2);
     const mag3 = Math.sqrt(B3.x * B3.x + B3.y * B3.y);
     if (mag3 < 1e-6) return null;
@@ -277,12 +273,12 @@ function rk4Step(x, y, h, forward = true) {
     const k4x = sign * B4.x / mag4;
     const k4y = sign * B4.y / mag4;
 
-
     const nextX = x + h * (k1x + 2 * k2x + 2 * k3x + k4x) / 6;
     const nextY = y + h * (k1y + 2 * k2y + 2 * k3y + k4y) / 6;
 
     return { x: nextX, y: nextY };
 }
+
 
 function traceStreamline(x0, y0) {
     const points = [];
@@ -342,6 +338,7 @@ function magnitudeToColor(mag) {
     }
 }
 
+
 function requestRender() {
     state.rendering.needsRender = true;
     if (!state.rendering.animationId) {
@@ -374,13 +371,11 @@ function animationLoop() {
         renderNextChunk();
     }
 
-    
     state.rendering.animationId = requestAnimationFrame(animationLoop);
 }
 
 
 function renderFast() {
-  
     ctx.fillStyle = '#050810';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -395,6 +390,7 @@ function renderFast() {
     for (const dipole of state.dipoles) dipole.draw();
     for (const wire of state.wires) wire.draw();
 }
+
 
 function render() {
     ctx.fillStyle = '#050810';
@@ -432,12 +428,10 @@ function drawVectorField() {
 
             if (mag < 1e-6) continue;
 
-
             const scale = Math.min(CONFIG.ARROW_SCALE * spacing / 3, mag * spacing / 5);
             const dx = (field.x / mag) * scale;
             const dy = (field.y / mag) * scale;
 
-     
             const color = magnitudeToColor(mag);
             ctx.strokeStyle = color;
             ctx.fillStyle = color;
@@ -465,7 +459,6 @@ function drawVectorField() {
         }
     }
 }
-
 
 function drawPlaceholderArrow(x, y, spacing) {
     const scale = spacing / 4;
@@ -612,12 +605,12 @@ function hideLoadingIndicator() {
 }
 
 let lastCursorUpdate = 0;
-const CURSOR_UPDATE_THROTTLE = 50;
+const CURSOR_UPDATE_THROTTLE = 50; 
 
 function updateCursorInfo(x, y) {
     const now = Date.now();
     if (now - lastCursorUpdate < CURSOR_UPDATE_THROTTLE) {
-        return;
+        return; 
     }
     lastCursorUpdate = now;
 
@@ -628,7 +621,7 @@ function updateCursorInfo(x, y) {
     const fieldValue = document.getElementById('fieldValue');
 
     if (posValue && fieldValue) {
-        posValue.textContent = [(${Math.round(x)}, ${Math.round(y)})]
+        posValue.textContent = `(${Math.round(x)}, ${Math.round(y)})`;
         fieldValue.textContent = mag.toFixed(3);
     }
 }
@@ -685,7 +678,7 @@ canvas.addEventListener('mousemove', (e) => {
         state.interaction.dragging.y = y - state.interaction.offset.y;
         canvas.style.cursor = 'grabbing';
         requestRender();
-        return;
+        return; 
     }
 
     if (state.interaction.rotating) {
@@ -694,7 +687,7 @@ canvas.addEventListener('mousemove', (e) => {
         state.interaction.rotating.angle = Math.atan2(dy, dx);
         canvas.style.cursor = 'grabbing';
         requestRender();
-        return;
+        return; 
     }
 
     let hovering = false;
@@ -738,7 +731,7 @@ window.addEventListener('mouseup', () => {
     if (state.interaction.dragging || state.interaction.rotating) {
         state.interaction.dragging = null;
         state.interaction.rotating = null;
-        requestRender();
+        requestRender(); 
     }
 });
 
@@ -755,7 +748,6 @@ function debounce(func, wait) {
 }
 
 const debouncedRender = debounce(requestRender, 150);
-
 
 
 document.getElementById('addDipole').addEventListener('click', () => {
@@ -814,12 +806,13 @@ document.querySelectorAll('.segment-btn').forEach((btn, index) => {
         const urlParams = new URLSearchParams(window.location.search);
         const mode = urlParams.get('mode') || 'dipole'; 
 
+       
         const levels = mode === 'wire' ? STRENGTH_LEVELS.wire : STRENGTH_LEVELS.dipole;
         const strength = levels[index];
 
         if (mode === 'wire') {
             CONFIG.WIRE_CURRENT = strength;
-            for (const wire of state.wires) {
+                        for (const wire of state.wires) {
                 const sign = wire.current >= 0 ? 1 : -1;
                 wire.current = strength * sign;
             }
@@ -853,7 +846,7 @@ document.getElementById('streamLength').addEventListener('input', (e) => {
 document.getElementById('stepSize').addEventListener('input', (e) => {
     state.settings.stepSize = parseFloat(e.target.value);
     document.getElementById('stepSizeValue').textContent = e.target.value;
-    debouncedRender(); 
+    debouncedRender();
 });
 
 document.getElementById('exportPNG').addEventListener('click', () => {
@@ -862,7 +855,6 @@ document.getElementById('exportPNG').addEventListener('click', () => {
     link.href = canvas.toDataURL('image/png');
     link.click();
 });
-
 
 const savedTheme = localStorage.getItem('theme') || 'dark';
 if (savedTheme === 'light') {
@@ -888,7 +880,7 @@ const mode = urlParams.get('mode');
 
 if (mode === 'dipole') {
     document.getElementById('addDipole').style.display = 'flex';
-    document.getElementById('addWirePositive').parentElement.style.display = 'none';
+    document.getElementById('addWirePositive').parentElement.style.display = 'none'; 
 
     const title = document.getElementById('strengthTitle');
     if (title) title.textContent = 'Dipole Strength';
@@ -896,7 +888,7 @@ if (mode === 'dipole') {
     state.dipoles.push(new Dipole(canvas.width / 2, canvas.height / 2));
 } else if (mode === 'wire') {
     document.getElementById('addDipole').style.display = 'none';
-    document.getElementById('addWirePositive').parentElement.style.display = 'flex';
+    document.getElementById('addWirePositive').parentElement.style.display = 'flex'; 
 
     const title = document.getElementById('strengthTitle');
     if (title) title.textContent = 'Wire Strength';
@@ -906,4 +898,3 @@ if (mode === 'dipole') {
 
 animationLoop();
 requestRender();
-

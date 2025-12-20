@@ -1,7 +1,6 @@
 
 
 :root {
-    
     --bg-primary: #0a0f1e;
     --bg-secondary: #0f172a;
     --bg-tertiary: #1e293b;
@@ -32,7 +31,6 @@
 }
 
 [data-theme="light"] {
-
     --bg-primary: #ffffff;
     --bg-secondary: #f8fafc;
     --bg-tertiary: #f1f5f9;
@@ -47,12 +45,10 @@
     --canvas-bg: #e2e8f0;
 }
 
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  
     transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
         color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
         border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
@@ -78,7 +74,6 @@ body {
     display: flex;
     flex-direction: column;
 }
-
 
 .header {
     text-align: center;
@@ -398,7 +393,6 @@ body .back-home-btn:hover svg {
 .btn:hover::after {
     animation: shimmer 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 
 .btn-primary {
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
