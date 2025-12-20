@@ -104,7 +104,6 @@ class Dipole {
         ctx.ellipse(0, 0, this.radius * 1.5, this.radius * 0.8, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // North pole (N)
         ctx.fillStyle = '#dc2626';
         ctx.beginPath();
         ctx.arc(this.radius * 0.8, 0, this.radius * 0.5, 0, Math.PI * 2);
@@ -232,7 +231,6 @@ class Wire {
 function getTotalField(x, y) {
     let Bx = 0, By = 0;
 
-    // Contribution from all dipoles
     for (const dipole of state.dipoles) {
         const field = dipole.getField(x, y);
         Bx += field.x;
@@ -382,7 +380,7 @@ function animationLoop() {
 
 
 function renderFast() {
-    // Clear canvas
+  
     ctx.fillStyle = '#050810';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -630,7 +628,7 @@ function updateCursorInfo(x, y) {
     const fieldValue = document.getElementById('fieldValue');
 
     if (posValue && fieldValue) {
-        posValue.textContent = [(${Math.round(x)}, ${Math.round(y)})](cci:2://file:///c:/Users/taksh/OneDrive/Desktop/New%20folder/static/js/script.js:191:0-271:1);
+        posValue.textContent = [(${Math.round(x)}, ${Math.round(y)})]
         fieldValue.textContent = mag.toFixed(3);
     }
 }
@@ -864,4 +862,48 @@ document.getElementById('exportPNG').addEventListener('click', () => {
     link.href = canvas.toDataURL('image/png');
     link.click();
 });
+
+
+const savedTheme = localStorage.getItem('theme') || 'dark';
+if (savedTheme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+}
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+    if (newTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+
+    localStorage.setItem('theme', newTheme);
+    requestRender(); 
+});
+
+const urlParams = new URLSearchParams(window.location.search);
+const mode = urlParams.get('mode');
+
+if (mode === 'dipole') {
+    document.getElementById('addDipole').style.display = 'flex';
+    document.getElementById('addWirePositive').parentElement.style.display = 'none';
+
+    const title = document.getElementById('strengthTitle');
+    if (title) title.textContent = 'Dipole Strength';
+
+    state.dipoles.push(new Dipole(canvas.width / 2, canvas.height / 2));
+} else if (mode === 'wire') {
+    document.getElementById('addDipole').style.display = 'none';
+    document.getElementById('addWirePositive').parentElement.style.display = 'flex';
+
+    const title = document.getElementById('strengthTitle');
+    if (title) title.textContent = 'Wire Strength';
+
+    state.wires.push(new Wire(canvas.width / 2, canvas.height / 2, CONFIG.WIRE_CURRENT));
+}
+
+animationLoop();
+requestRender();
 
