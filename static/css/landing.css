@@ -602,6 +602,336 @@ body.light-mode .compass-needle::before {
 }
 
 
+.transition-overlay.mode-dipole .dipole-transition {
+    display: block;
+}
+
+.magnetic-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: coreAppear 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.pole {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
+    color: white;
+    position: absolute;
+    box-shadow: 0 0 20px currentColor;
+}
+
+.north {
+    background: #ef4444;
+    color: white;
+    left: 0;
+    animation: mergeNorth 2s ease-in-out forwards;
+}
+
+.south {
+    background: #3b82f6;
+    color: white;
+    right: 0;
+    animation: mergeSouth 2s ease-in-out forwards;
+}
+
+.field-lines span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    width: 0;
+    height: 0;
+    animation: expandField 2s ease-out infinite;
+}
+
+.field-lines span:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.field-lines span:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.particles-swarm .p {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    opacity: 0;
+}
+
+/* Generate random particle movements */
+.particles-swarm .p:nth-child(1) {
+    animation: swarmIn 1.5s ease-in forwards;
+    transform: translate(100px, 100px);
+}
+
+.particles-swarm .p:nth-child(2) {
+    animation: swarmIn 1.5s ease-in 0.1s forwards;
+    transform: translate(-120px, 50px);
+}
+
+.particles-swarm .p:nth-child(3) {
+    animation: swarmIn 1.5s ease-in 0.2s forwards;
+    transform: translate(80px, -90px);
+}
+
+.particles-swarm .p:nth-child(4) {
+    animation: swarmIn 1.5s ease-in 0.15s forwards;
+    transform: translate(-60px, -120px);
+}
+
+.particles-swarm .p:nth-child(5) {
+    animation: swarmIn 1.5s ease-in 0.05s forwards;
+    transform: translate(150px, 0);
+}
+
+.particles-swarm .p:nth-child(6) {
+    animation: swarmIn 1.5s ease-in 0.25s forwards;
+    transform: translate(-150px, 20px);
+}
+
+@keyframes coreAppear {
+    0% {
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1) rotate(360deg);
+    }
+}
+
+@keyframes mergeNorth {
+    0% {
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+
+    50% {
+        transform: translateX(-20px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(-10px);
+    }
+}
+
+@keyframes mergeSouth {
+    0% {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+
+    50% {
+        transform: translateX(20px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(10px);
+    }
+}
+
+@keyframes expandField {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+        border-width: 4px;
+    }
+
+    100% {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+        border-width: 0;
+    }
+}
+
+@keyframes swarmIn {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+}
+
+/* --- WIRE ANIMATION --- */
+.transition-overlay.mode-wire .wire-transition {
+    display: block;
+}
+
+.wire-container {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    transform: translateY(-50%);
+}
+
+.main-wire {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #10b981;
+    box-shadow: 0 0 15px #10b981;
+    animation: wireShoot 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.lightning-svg {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    transform: translateY(-50%);
+    z-index: 2;
+    overflow: visible;
+}
+
+.lightning-path {
+    fill: none;
+    stroke: #fbbf24;
+    stroke-width: 2;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    filter: drop-shadow(0 0 5px #fbbf24);
+    animation: lightningStrike 1s ease-out 0.3s forwards;
+}
+
+.magnetic-rings .ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateX(70deg);
+    border: 2px solid rgba(16, 185, 129, 0.5);
+    border-radius: 50%;
+    width: 0;
+    height: 0;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    animation: ringExpand 1.5s ease-out infinite;
+}
+
+.magnetic-rings .ring:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.magnetic-rings .ring:nth-child(3) {
+    animation-delay: 0.8s;
+}
+
+.sparks-burst .s {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #fbbf24;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    opacity: 0;
+}
+
+.sparks-burst .s:nth-child(1) {
+    animation: sparkExplode 0.8s ease-out 0.5s forwards;
+    transform: rotate(0deg) translateY(-50px);
+}
+
+.sparks-burst .s:nth-child(2) {
+    animation: sparkExplode 0.8s ease-out 0.5s forwards;
+    transform: rotate(45deg) translateY(-60px);
+}
+
+.sparks-burst .s:nth-child(3) {
+    animation: sparkExplode 0.8s ease-out 0.5s forwards;
+    transform: rotate(90deg) translateY(-40px);
+}
+
+@keyframes wireShoot {
+    0% {
+        width: 0;
+        opacity: 1;
+    }
+
+    100% {
+        width: 100%;
+        opacity: 1;
+    }
+}
+
+@keyframes lightningStrike {
+    0% {
+        stroke-dashoffset: 1000;
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        stroke-dashoffset: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes ringExpand {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+        border-width: 3px;
+    }
+
+    100% {
+        width: 200px;
+        height: 200px;
+        opacity: 0;
+        border-width: 0;
+    }
+}
+
+@keyframes sparkExplode {
+    0% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--tx), var(--ty));
+        opacity: 0;
+    }
+}
+
+
+
 
 
 
